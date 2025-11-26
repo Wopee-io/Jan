@@ -1,0 +1,61 @@
+name: Deployment operations
+run-name: Run ${{ inputs.DEPLOYMENT }} ${{ inputs.SCRIPT_FILE }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      DEPLOYMENT:
+        type: choice
+        description: "Server to run on"
+        required: true
+        default: "battle.wopee.io"
+        options:
+        - battle.wopee.io
+      SCRIPT_FILE:
+        type: choice
+        description: "Path to script file"
+        required: true
+        default: "up.sh"
+        options:
+        - up.sh
+        - down.sh
+      FORCE_REBUILD_SPAWNER:
+        type: boolean
+        description: "Force rebuild spawner image (ignore cache)"
+        required: false
+        default: false
+  workflow_call:
+    inputs:
+      DEPLOYMENT:
+        type: string
+        required: true
+        default: "battle.wopee.io"
+      SCRIPT_FILE:
+        type: string
+        required: true
+        default: "up.sh"
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  run-operation:
+    runs-on: ${{ inputs.DEPLOYMENT }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Log in to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Run operation
+        env:
+          SOPS_AGE_KEY: ${{ secrets.SOPS_AGE_KEY }}
+          DEPLOYMENT: ${{ inputs.DEPLOYMENT }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN }}
+        run: |
+          bash ./deployment/${{ inputs.SCRIPT_FILE }}
