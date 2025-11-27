@@ -11,6 +11,10 @@ on:
         default: "battle.wopee.io"
         options:
         - battle.wopee.io
+        - battle1.wopee.io
+        - battle2.wopee.io
+        - battle3.wopee.io
+        - jan.wopee.io
       SCRIPT_FILE:
         type: choice
         description: "Path to script file"
