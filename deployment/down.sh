@@ -6,14 +6,17 @@ echo "===="
 
 . ./utils/export-uids.sh
 
+
 ENV_FILE="./deployment/${DEPLOYMENT}/.env"
 DEFAULT_ENV_FILE="./deployment/default/.env"
 . ./utils/load-env.sh
 
 SECRETS_ENC_FILE="./deployment/${DEPLOYMENT}/secrets.enc.env"
+DEFAULT_SECRETS_ENC_FILE="./deployment/default/secrets.enc.env"
 . ./utils/load-secrets-enc-env.sh
 
 VERSIONS_ENV_FILE="./deployment/${DEPLOYMENT}/versions.env"
+DEFAULT_VERSIONS_ENV_FILE="./deployment/default/versions.env"
 . ./utils/load-versions-env.sh
 
 : "${DATA_DIR_PREFIX:=/srv/}"
