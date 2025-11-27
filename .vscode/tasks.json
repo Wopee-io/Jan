@@ -2,75 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "docker: db up",
+      "label": "dev",
       "type": "shell",
-      "command": "docker compose up battle-db -d",
+      "command": "./scripts/dev.sh",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
-        "panel": "dedicated"
+        "panel": "shared"
       }
     },
     {
-      "label": "backend: dev",
+      "label": "dev:stop",
       "type": "shell",
-      "command": "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --log-level debug",
-      "options": {
-        "cwd": "${workspaceFolder}/backend"
-      },
-      "isBackground": true,
-      "problemMatcher": {
-        "pattern": {
-          "regexp": "^.*$",
-          "file": 1,
-          "location": 2,
-          "message": 3
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*Starting.*$",
-          "endsPattern": "^.*Uvicorn running on.*$"
-        }
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "frontend: dev",
-      "type": "shell",
-      "command": "npm run dev",
-      "options": {
-        "cwd": "${workspaceFolder}/frontend"
-      },
-      "isBackground": true,
-      "problemMatcher": {
-        "pattern": {
-          "regexp": "^.*$",
-          "file": 1,
-          "location": 2,
-          "message": 3
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*VITE.*$",
-          "endsPattern": "^.*Local:.*$"
-        }
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      }
-    },
-    {
-      "label": "docker: db logs",
-      "type": "shell",
-      "command": "docker compose logs -f battle-db",
+      "command": "./scripts/dev-stop.sh",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
-        "panel": "dedicated"
+        "panel": "shared"
       }
     }
   ]

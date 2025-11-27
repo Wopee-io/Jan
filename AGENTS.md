@@ -19,18 +19,11 @@ Project context for AI coding assistants. Keep this concise and actionable.
 ### Essential Commands
 
 ```bash
-# Development (recommended)
-# Press F5 in VS Code → "Full Stack Dev (DB in Docker + backend + frontend)"
-
-# Alternative: Docker Compose
-docker compose up -d              # Start all services
-docker compose logs -f            # View logs
-
-# Manual development
-docker compose up battle-db -d    # Start DB only
-cd backend && uvicorn app.main:app --reload --port 8000  # Backend
-cd frontend && npm run dev        # Frontend
+./scripts/dev.sh      # Start dev environment (DB + backend + frontend)
+./scripts/dev-stop.sh # Stop everything
 ```
+
+**VS Code**: Press F5 → "Full Stack Dev" (uses same scripts)
 
 ### URLs (Development)
 
@@ -41,6 +34,66 @@ cd frontend && npm run dev        # Frontend
 ### URLs (Production)
 
 - App: https://app.battle.wopee.io
+
+## Claude Code Workflow
+
+### Testing Backend Changes
+
+After modifying backend code, verify with curl:
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Test specific endpoint
+curl http://localhost:8000/your-endpoint
+
+# View backend logs
+tail -f logs/backend.log
+```
+
+### Testing Frontend Changes
+
+After modifying frontend code, verify with Chrome MCP:
+
+```
+# Navigate to page
+mcp__chrome-devtools__navigate_page url="http://localhost:3000"
+
+# Get page structure (returns element UIDs)
+mcp__chrome-devtools__take_snapshot
+
+# Click element
+mcp__chrome-devtools__click uid="<uid-from-snapshot>"
+
+# Fill input field
+mcp__chrome-devtools__fill uid="<input-uid>" value="test"
+
+# Verify visual result
+mcp__chrome-devtools__take_screenshot
+```
+
+### Common MCP Operations
+
+| Action | Command |
+|--------|---------|
+| Navigate | `mcp__chrome-devtools__navigate_page url="..."` |
+| Inspect DOM | `mcp__chrome-devtools__take_snapshot` |
+| Click | `mcp__chrome-devtools__click uid="..."` |
+| Type text | `mcp__chrome-devtools__fill uid="..." value="..."` |
+| Screenshot | `mcp__chrome-devtools__take_screenshot` |
+| Press key | `mcp__chrome-devtools__press_key key="Enter"` |
+
+### Debugging
+
+```bash
+# View logs
+tail -f logs/backend.log   # Backend
+tail -f logs/frontend.log  # Frontend
+
+# Restart everything
+./scripts/dev-stop.sh && ./scripts/dev.sh
+```
 
 ## Directory Structure
 

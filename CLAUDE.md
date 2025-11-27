@@ -2,24 +2,79 @@
 
 Full-stack web app: React + TypeScript frontend, FastAPI + Python backend, PostgreSQL.
 
-## Quick Commands
+## Development
 
+### Start Dev Environment
 ```bash
-# VS Code: Press F5 → "Full Stack Dev"
-# Or manually:
-docker compose up battle-db -d                                    # Database
-cd backend && uvicorn app.main:app --reload --port 8000          # Backend
-cd frontend && npm run dev                                        # Frontend
+./scripts/dev.sh      # Start DB + backend + frontend (all in background)
+./scripts/dev-stop.sh # Stop everything
 ```
+
+**VS Code**: Press F5 → "Full Stack Dev" (uses same scripts)
+
+### URLs (when running)
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| Backend API | http://localhost:8000 |
+| API Docs (Swagger) | http://localhost:8000/docs |
+
+### Test Backend with curl
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Register user
+curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","username":"testuser","password":"testpass123"}'
+
+# Login (get JWT token)
+curl -X POST http://localhost:8000/auth/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=test@example.com&password=testpass123"
+
+# Authenticated request (replace <token>)
+curl http://localhost:8000/auth/me -H "Authorization: Bearer <token>"
+```
+
+### Test Frontend with Chrome MCP
+```
+# 1. Open frontend
+mcp__chrome-devtools__navigate_page url="http://localhost:3000"
+
+# 2. Inspect page structure
+mcp__chrome-devtools__take_snapshot
+
+# 3. Interact with elements (use uid from snapshot)
+mcp__chrome-devtools__click uid="<element-uid>"
+mcp__chrome-devtools__fill uid="<input-uid>" value="test value"
+
+# 4. Take screenshot to verify visual state
+mcp__chrome-devtools__take_screenshot
+```
+
+### View Logs
+```bash
+tail -f logs/backend.log   # Backend (uvicorn)
+tail -f logs/frontend.log  # Frontend (Vite)
+```
+
+### Auto-Reload
+- Backend: Auto-reloads on Python file changes (uvicorn --reload)
+- Frontend: Auto-reloads on source changes (Vite HMR)
+- No restart needed for most code changes
 
 ## Key Locations
 
-- Backend entry: `backend/app/main.py`
-- API routes: `backend/app/routes_*.py`, `backend/app/auth_routes.py`
-- Database models: `backend/app/models.py`
-- Frontend entry: `frontend/src/App.tsx`
-- API client: `frontend/src/api/client.ts`
-- Config: `.env.example` (copy to `.env`)
+| Purpose | Path |
+|---------|------|
+| Backend entry | `backend/app/main.py` |
+| API routes | `backend/app/routes_*.py`, `backend/app/auth_routes.py` |
+| Database models | `backend/app/models.py` |
+| Frontend entry | `frontend/src/App.tsx` |
+| API client | `frontend/src/api/client.ts` |
+| Environment config | `.env` (copy from `.env.example`) |
 
 ## Code Style
 
@@ -31,21 +86,4 @@ cd frontend && npm run dev                                        # Frontend
 
 1. Read `AGENTS.md` for full project context
 2. Check existing code patterns before adding new ones
-3. For new features/breaking changes: use OpenSpec workflow
-
-<!-- OPENSPEC:START -->
-## OpenSpec Instructions
-
-Always open `@/openspec/AGENTS.md` when the request:
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big performance/security work
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
+3. For new features/breaking changes: use OpenSpec workflow (see `openspec/AGENTS.md`)
