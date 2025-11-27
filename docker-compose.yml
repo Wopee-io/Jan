@@ -18,7 +18,7 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     networks:
-      - battle-internal
+      - ${STACK_PREFIX}battle-internal
 
   battle-backend:
     build:
@@ -40,7 +40,7 @@ services:
     expose:
       - "8000"
     networks:
-      - battle-internal
+      - ${STACK_PREFIX}battle-internal
       - proxy
     labels:
       - "traefik.enable=true"
@@ -62,7 +62,7 @@ services:
     expose:
       - "80"
     networks:
-      - battle-internal
+      - ${STACK_PREFIX}battle-internal
       - proxy
     labels:
       - "traefik.enable=true"
@@ -73,7 +73,7 @@ services:
 
 
 networks:
-  battle-internal:
+  ${STACK_PREFIX}battle-internal:
     driver: bridge
   proxy:
     external: true
