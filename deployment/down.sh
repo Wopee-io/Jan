@@ -31,7 +31,8 @@ else
 fi
 
 : "${DOMAIN:=battle.wopee.io}"
-export APP_HOST="${STACK_PREFIX}app.${DOMAIN}"
+export APP_HOST="jan.wopee.io"
+
 
 export ABS_PROJECT_DIR="${DATA_DIR_PREFIX%/}/${DEPLOYMENT_NAME}"
 
