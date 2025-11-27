@@ -23,7 +23,7 @@ echo "Starting Battle dev environment..."
 
 # 1. Database
 echo "[1/3] Starting PostgreSQL..."
-docker-compose up battle-db -d
+docker-compose up jan-db -d
 sleep 2
 
 # 2. Backend

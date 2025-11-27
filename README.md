@@ -52,7 +52,7 @@ For AI agents or manual setup:
 
 ```bash
 # 1. Start the database
-docker compose up battle-db -d
+docker compose up jan-db -d
 
 # 2. Start the backend (in backend/ folder)
 cd backend
@@ -84,7 +84,7 @@ npm install
 ### Viewing Logs
 
 - **Backend logs**: Check the integrated terminal running "backend: dev" task, or the terminal where uvicorn is running
-- **Database logs**: `docker compose logs -f battle-db`
+- **Database logs**: `docker compose logs -f jan-db`
 - **Frontend logs**: Check the integrated terminal running "frontend: dev" task
 
 In development mode (`APP_ENV=development`), backend logs include debug-level output with timestamps, log levels, and module names.

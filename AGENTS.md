@@ -289,7 +289,7 @@ For new features or breaking changes, use OpenSpec:
 
 ```bash
 # Check logs
-docker compose logs -f battle-backend
+docker compose logs -f jan-backend
 
 # Or run locally with debug logging
 APP_ENV=development uvicorn app.main:app --reload --log-level debug
@@ -319,8 +319,8 @@ APP_ENV=development uvicorn app.main:app --reload --log-level debug
 ### Database connection failed
 
 ```bash
-docker compose up battle-db -d
-docker compose logs battle-db  # Check for errors
+docker compose up jan-db -d
+docker compose logs jan-db  # Check for errors
 ```
 
 ### CORS errors

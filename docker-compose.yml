@@ -1,7 +1,7 @@
 services:
-  battle-db:
+  jan-db:
     image: postgres:18
-    container_name: ${STACK_PREFIX}battle-db
+    container_name: ${STACK_PREFIX}jan-db
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
@@ -18,19 +18,19 @@ services:
     ports:
       - "${DB_PORT:-5432}:5432"
     networks:
-      - ${STACK_PREFIX}battle-internal
+      - ${STACK_PREFIX}jan-internal
 
-  battle-backend:
+  jan-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: ${STACK_PREFIX}battle-backend
+    container_name: ${STACK_PREFIX}jan-backend
     restart: unless-stopped
     depends_on:
-      battle-db:
+      jan-db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${STACK_PREFIX}battle-db:5432/${POSTGRES_DB}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${STACK_PREFIX}jan-db:5432/${POSTGRES_DB}"
       SECRET_KEY: ${SECRET_KEY}
       CORS_ORIGINS: ${CORS_ORIGINS}
       JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
@@ -40,40 +40,40 @@ services:
     expose:
       - "8000"
     networks:
-      - ${STACK_PREFIX}battle-internal
+      - ${STACK_PREFIX}jan-internal
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.${STACK_PREFIX}battle-api.rule=Host(`${APP_HOST}`) && (PathPrefix(`/auth`) || PathPrefix(`/items`) || PathPrefix(`/health`) || PathPrefix(`/docs`) || PathPrefix(`/openapi.json`))"
-      - "traefik.http.routers.${STACK_PREFIX}battle-api.entrypoints=websecure"
-      - "traefik.http.routers.${STACK_PREFIX}battle-api.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${STACK_PREFIX}battle-api.loadbalancer.server.port=8000"
+      - "traefik.http.routers.${STACK_PREFIX}jan-api.rule=Host(`${APP_HOST}`) && (PathPrefix(`/auth`) || PathPrefix(`/items`) || PathPrefix(`/health`) || PathPrefix(`/docs`) || PathPrefix(`/openapi.json`))"
+      - "traefik.http.routers.${STACK_PREFIX}jan-api.entrypoints=websecure"
+      - "traefik.http.routers.${STACK_PREFIX}jan-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${STACK_PREFIX}jan-api.loadbalancer.server.port=8000"
 
-  battle-frontend:
+  jan-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: ${STACK_PREFIX}battle-frontend
+    container_name: ${STACK_PREFIX}jan-frontend
     restart: unless-stopped
     depends_on:
-      - battle-backend
+      - jan-backend
     environment:
-      BACKEND_URL: ${STACK_PREFIX}battle-backend:8000
+      BACKEND_URL: ${STACK_PREFIX}jan-backend:8000
     expose:
       - "80"
     networks:
-      - ${STACK_PREFIX}battle-internal
+      - ${STACK_PREFIX}jan-internal
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.${STACK_PREFIX}battle-app.rule=Host(`${APP_HOST}`)"
-      - "traefik.http.routers.${STACK_PREFIX}battle-app.entrypoints=websecure"
-      - "traefik.http.routers.${STACK_PREFIX}battle-app.tls.certresolver=letsencrypt"
-      - "traefik.http.services.${STACK_PREFIX}battle-app.loadbalancer.server.port=80"
+      - "traefik.http.routers.${STACK_PREFIX}jan-app.rule=Host(`${APP_HOST}`)"
+      - "traefik.http.routers.${STACK_PREFIX}jan-app.entrypoints=websecure"
+      - "traefik.http.routers.${STACK_PREFIX}jan-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${STACK_PREFIX}jan-app.loadbalancer.server.port=80"
 
 
 networks:
-  ${STACK_PREFIX}battle-internal:
+  ${STACK_PREFIX}jan-internal:
     driver: bridge
   proxy:
     external: true
