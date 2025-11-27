@@ -31,7 +31,7 @@ jobs:
     needs: [extract-prefix]
     uses: ./.github/workflows/deployment.yml
     with:
-      DEPLOYMENT: battle.wopee.io
+      DEPLOYMENT: jan.wopee.io
       SCRIPT_FILE: down.sh
       DEPLOYMENT_PREFIX: ${{ needs.extract-prefix.outputs.prefix }}
     secrets: inherit
