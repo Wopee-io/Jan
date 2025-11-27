@@ -8,7 +8,7 @@ on:
         type: choice
         description: "Server to run on"
         required: true
-        default: "battle.wopee.io"
+        default: "jan.wopee.io"
         options:
         - battle.wopee.io
         - battle1.wopee.io
